@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<style>
+    main {
+        margin-top: 20rem;
+    }
+
+    #profile-section {
+        padding: 0 10rem;
+    }
+
+    #user-avatar {
+        position: relative;
+        top: -50px;
+        background-color: black;
+        border-radius: 50%;
+        border: 0.5rem solid white;
+        box-sizing: content-box;
+    }
+
+    #icon-upload-avatar {
+        color: black;
+        position: relative;
+        left: -30px;
+        top: 0;
+        cursor: pointer;
+    }
+
+    #fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));;
+        gap: 2rem;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field input {
+        border-bottom: 1px solid black;
+    }
+
+    #enable-edit {
+        cursor: pointer;
+        color: #007BFF;
+        text-decoration: underline;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn:hover {
+        color: white;
+    }
+
+    #cancel-btn {
+        background-color: #fff;
+        color: #dc3545;
+        border: 2px solid #dc3545;
+    }
+
+    #cancel-btn:hover {
+        color: white;
+        background-color: #dc3545;
+    }
+
+    #cancel-btn {
+        min-width: 15%;
+    }
+
+    @media (max-width: 900px) {
+        #profile-section {
+            padding: 0 2rem 5rem 2rem;
+        }
+
+        #fields {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="w-100 h-100 p-0 text-black">
+        {% include 'messages.html' %}
+
+        <section id="profile-section" class="w-100 h-100 bg-white">
+            <form method="post" class="m-0" enctype="multipart/form-data">
+                <div id="profile-header" class="d-flex justify-content-start">
+                    <div id="img-wrapper">
+                        <img id="user-avatar" width="100" height="100" src="{{ request.user.avatar.url }}" alt="Profile Picture">
+                        <input type="file" name="{{ form.avatar.name }}" accept="image/*" id="id_avatar" hidden>
+                        <label id="icon-upload-avatar" for="id_avatar">
+                            <img width="20" src="{% static 'img/upload-avatar.svg' %}" alt="upload">
+                        </label>
+                    </div>
+                    <div id="username" class="mt-3">
+                        <h3 class="mb-0">{{ user.username }}</h3>
+                        <p id="enable-edit" onclick="enable_edit()">Edit Profile</p>
+                    </div>
+                </div>
+
+                <h2 class="text-start text-secondary mb-3">Personal Information</h2>
+
+                {% csrf_token %}
+                <div id="fields">
+                    {% for field in form %}
+                        {% if field != form.avatar %}
+                            <div class="field">
+                                {{ field.label }}
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="buttons">
+                    <button id="submit-btn" type="submit" class="btn btn-primary">Save Changes</button>
+                    <div onclick="refresh()" id="cancel-btn" class="btn btn-danger d-inline-block">Cancel</div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+
+        </section>
+    </main>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+    document.querySelector('header div').style.visibility = 'hidden';
+</script>
+
+<script>
+    let formHasErrors;
+    {% for field in form %}
+      {% if field.errors %}
+        formHasErrors = true;
+      {% endif %}
+    {% endfor %}
+
+    const image = document.getElementById("icon-upload-avatar");
+    const fields = document.getElementsByClassName("field");
+    const submitButton = document.getElementById("submit-btn")
+    const cancelButton = document.getElementById("cancel-btn")
+
+    function enable_edit() {
+        cancelButton.style.visibility = 'visible';
+        submitButton.disabled = false;
+        image.setAttribute("for", "id_avatar");
+        image.style.cursor = 'pointer';
+        image.style.visibility = 'visible';
+        for (let field of fields) {
+            const input = field.querySelector("input");
+            input.disabled = false;
+        }
+        document.getElementById("enable-edit").style.visibility = 'hidden';
+    }
+
+    function disable_edit() {
+        cancelButton.style.visibility = 'hidden';
+        submitButton.disabled = true;
+        image.removeAttribute("for");
+        image.style.visibility = 'hidden';
+        image.style.cursor = 'unset';
+        for (let field of fields) {
+            const input = field.querySelector("input");
+            input.disabled = true;
+        }
+    }
+
+    function refresh() {
+        window.location.href = {% url 'user:profile' %};
+    }
+
+    if (formHasErrors === true) enable_edit();
+    else disable_edit();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarInput = document.getElementById('id_avatar');
+        const avatarPreview = document.getElementById('user-avatar');
+
+        avatarInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarPreview.src = e.target.result;
+                    avatarPreview.style.objectFit = 'cover';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}

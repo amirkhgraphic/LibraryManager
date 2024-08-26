@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block main %}
+    <main>
+        {% include 'messages.html' %}
+
+        <h1><img src="{{ user.avatar.url }}" alt="avatar" width="50"/> {{ user }}</h1>
+    </main>
+{% endblock %}

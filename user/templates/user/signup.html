@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Sign-up Form</h2>
+            <div class="line"></div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn" type="submit">Sign-Up</button>
+            </form>
+
+            <p class="text-center mt-3">Already have an account? <a href="{% url "user:log-in" %}">Log-in Here.</a></p>
+        </section>
+
+    </main>
+{% endblock main %}

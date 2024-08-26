@@ -18,7 +18,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'user.apps.UserConfig',
+    'user.apps.UserConfig',
+
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -94,3 +96,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
+
+LOGIN_URL = reverse_lazy("user:log-in")
+LOGIN_REDIRECT_URL = reverse_lazy("home")
+LOGOUT_REDIRECT_URL = LOGIN_URL

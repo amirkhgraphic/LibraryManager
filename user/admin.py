@@ -6,7 +6,24 @@ from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
+from library.models import Favorite, ReadingProgress, Book
+
 User = get_user_model()
+
+
+class FavoriteInline(admin.TabularInline):
+    model = Favorite
+    extra = 0
+
+
+class ReadingProgressInline(admin.TabularInline):
+    model = ReadingProgress
+    extra = 0
+
+
+class BooksInline(admin.StackedInline):
+    model = Book
+    extra = 0
 
 
 @admin.register(User)
@@ -15,6 +32,7 @@ class MyUserAdmin(UserAdmin):
     readonly_fields = ('render_avatar', 'created_at', 'updated_at', 'last_login')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('-created_at',)
+    inlines = (FavoriteInline, ReadingProgressInline, BooksInline)
     fieldsets = (
         (_('basic'), {'fields': (('render_avatar', 'avatar'), 'username', 'first_name', 'last_name', 'email')}),
         (_('Important dates'), {'fields': ('created_at', 'updated_at', 'last_login')}),

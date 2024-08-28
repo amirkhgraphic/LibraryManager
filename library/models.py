@@ -72,7 +72,7 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     cover_image = models.ImageField(upload_to='book/cover/')
     published_date = models.DateField(null=True, blank=True)
-    genres = models.ManyToManyField(Genre, related_name='books')
+    genres = models.ManyToManyField(Genre, related_name='books', null=True, blank=True)
     author = models.ForeignKey(Author, on_delete=models.PROTECT)
     upload_by = models.ForeignKey(User, on_delete=models.CASCADE)
     book_type = models.CharField(max_length=10, choices=BookType.choices, default=BookType.EBOOK)

@@ -92,8 +92,6 @@ input {
     margin-top: 10px;
     width: fit-content;
     min-width: 25%;
-    background-color: #007BFF;
-    color: white;
 }
 
 .btn:hover {

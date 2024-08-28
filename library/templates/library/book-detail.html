@@ -22,6 +22,9 @@
             <h5>Book Type: {{ book.get_book_type_display }}</h5>
             <h5>File Format: {{ book.get_file_format_display }}</h5>
 
+            <h5>Description: </h5>
+            <p style="text-align: justify">{{ book.description|default:"Nothing to show" }}</p>
+
             <h5>Genres:</h5>
             <ul>
                 {% for genre in book.genres.all %}
@@ -29,8 +32,18 @@
                 {% endfor %}
             </ul>
 
-            <h5>Description: </h5>
-            <p style="text-align: justify">{{ book.description|default:"Nothing to show" }}</p>
+            <h5>Chapters:</h5>
+            <ul>
+                {% for chapter in book.get_chapters %}
+                    <li>Chapter {{ chapter.number }}: {{ chapter.content }}</li>
+                {% endfor %}
+            </ul>
+
+            <br>
+            {% if request.user == book.upload_by %}
+                <a href="{% url 'library:book-update' book.id %}" class="btn btn-secondary">Update</a>
+                <a href="{% url 'library:book-delete' book.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
         </section>
     </main>
 {% endblock main %}

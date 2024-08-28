@@ -26,11 +26,11 @@
             <p style="text-align: justify">{{ book.description|default:"Nothing to show" }}</p>
 
             <h5>Genres:</h5>
-            <ul>
-                {% for genre in book.genres.all %}
-                    <li>{{ genre }}</li>
-                {% endfor %}
-            </ul>
+            {% for genre in book.genres.all %}
+                <a class="btn btn-secondary me-2 px-3" style="min-width: auto;" href="#">{{ genre }}</a>
+            {% endfor %}
+            <br/>
+            <br/>
 
             <h5>Chapters:
                 {% if book.upload_by == request.user %}

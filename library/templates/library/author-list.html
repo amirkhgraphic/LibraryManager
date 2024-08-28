@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Authors List</h2>
+            <div class="line mb-3"></div>
+
+            <div>
+                {% for author in authors %}
+                    <div class="card mb-3 bg-dark p-3 rounded-3">
+                        <div class="row g-0">
+                            <div class="col-md-2">
+                                <img class="img-fluid rounded-start" src="{{ author.avatar.url }}" alt="{{ author }}" />
+                            </div>
+                            <div class="col-md-10">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ author }}</h4>
+                                    <p class="card-text" style="text-align: justify">{{ author.bio|truncatechars:300 }}</p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="{% url 'library:author-detail' author.id %}" class="btn btn-primary">Read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock main %}

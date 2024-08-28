@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h1>{{ author }}</h1>
+            <div class="line mb-3"></div>
+
+            <div class="text-center">
+                <img class="image-fluid" src="{{ author.avatar.url }}" alt="{{ author }}" width="500px" />
+            </div>
+
+            <h5>first name: {{ author.first_name }}</h5>
+            {% if author.middle_name %}
+            <h5>middle name: {{ author.middle_name }}</h5>
+            {% endif %}
+            <h5>last name: {{ author.last_name }}</h5>
+
+            <h5>birth date: {{ author.birth_date }}</h5>
+            {% if author.death_date %}
+                <h5>Author Passed away at: {{ author.death_date }}</h5>
+            {% else %}
+                <h5>Author is Alive</h5>
+            {% endif %}
+
+            <h5>age: {{ author.age }}</h5>
+
+            <h5>Biography: </h5>
+            <p style="text-align: justify">{{ author.bio }}</p>
+        </section>
+    </main>
+{% endblock main %}

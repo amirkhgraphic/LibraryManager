@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', generic.TemplateView.as_view(template_name='home.html'), name='home'),
     path('user/', include(('user.urls', 'user'), namespace='user')),
+    path('library/', include(('library.urls', 'library'), namespace='library')),
 ]
 
 if settings.DEBUG:

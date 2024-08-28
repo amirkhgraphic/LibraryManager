@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Books List</h2>
+            <div class="line mb-3"></div>
+
+            <div>
+                {% for book in books %}
+                    <div class="card mb-3 bg-dark p-3 rounded-3">
+                        <div class="row g-0">
+                            <div class="col-md-2">
+                                <img class="img-fluid rounded-start" src="{{ book.cover_image.url }}" alt="{{ book }}" />
+                            </div>
+                            <div class="col-md-10">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ book.title }} ({{ book.published_date.year }})</h4>
+                                    <p class="card-text" style="text-align: justify">{{ book.description|truncatechars:300 }}</p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="{% url 'library:book-detail' book.id %}" class="btn btn-primary">Read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock main %}

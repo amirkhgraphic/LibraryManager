@@ -14,4 +14,10 @@ urlpatterns = [
     path('book/<int:book_id>/', views.BookDetailView.as_view(), name='book-detail'),
     path('book/update/<int:book_id>/', views.BookUpdateView.as_view(), name='book-update'),
     path('book/delete/<int:book_id>/', views.BookDeleteView.as_view(), name='book-delete'),
+
+    # Chapter Model Urls
+    path('chapter/create/', views.ChapterCreateView.as_view(), name='chapter-create'),
+    path('chapter/update/<int:chapter_id>', views.ChapterUpdateView.as_view(), name='chapter-update'),
+    path('chapter/delete/<int:chapter_id>', views.ChapterDeleteView.as_view(), name='chapter-delete'),
+    path('chapter/<int:chapter_id>', views.ChapterDetailView.as_view(), name='chapter-detail'),
 ]

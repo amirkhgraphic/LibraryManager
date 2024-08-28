@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Book Delete Form</h2>
+            <div class="line"></div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3>Are you sure you want to delete this chapter?!</h3>
+                {{ form }}
+                <button class="btn btn-danger w-100" type="submit">Submit</button>
+                <a href="{% url 'library:book-list' %}" class="btn btn-secondary w-100">Cancel</a>
+            </form>
+        </section>
+    </main>
+{% endblock main %}

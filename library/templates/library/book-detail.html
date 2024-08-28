@@ -32,10 +32,21 @@
                 {% endfor %}
             </ul>
 
-            <h5>Chapters:</h5>
+            <h5>Chapters:
+                {% if book.upload_by == request.user %}
+                <a class="btn btn-primary" href="{% url 'library:chapter-create' %}">Add New Chapter</a>
+                {% endif %}
+            </h5>
             <ul>
                 {% for chapter in book.get_chapters %}
-                    <li>Chapter {{ chapter.number }}: {{ chapter.content }}</li>
+                    <li>
+                        Chapter {{ chapter.number }}: {{ chapter.title }}
+                        <a href="{% url 'library:chapter-detail' chapter.id %}" class="btn btn-primary ms-3">View</a>
+                        {% if book.upload_by == request.user %}
+                            <a href="{% url 'library:chapter-update' chapter.id %}" class="btn btn-secondary">Update</a>
+                            <a href="{% url 'library:chapter-delete' chapter.id %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
 

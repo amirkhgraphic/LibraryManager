@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Chapter Update Form</h2>
+            <div class="line"></div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary w-100" type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+{% endblock main %}

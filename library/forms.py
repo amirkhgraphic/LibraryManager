@@ -1,6 +1,9 @@
-from django import forms
+import os
 
-from .models import Author, Book
+from django import forms
+from django.core.exceptions import ValidationError
+
+from .models import Author, Book, Chapter
 
 
 class DateInput(forms.DateInput):
@@ -91,3 +94,51 @@ class BookForm(forms.ModelForm):
                 'class': 'form-control mb-2'
             }),
         }
+
+
+class ChapterForm(forms.ModelForm):
+    class Meta:
+        model = Chapter
+        fields = [
+            'book',
+            'title',
+            'number',
+            'content',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control mb-2',
+                'placeholder': 'Enter Chapter title',
+            }),
+            'number': forms.NumberInput(attrs={
+                'class': 'form-control mb-2',
+                'placeholder': 'Enter Chapter number',
+                'min': 1,
+            }),
+            'book': forms.Select(attrs={
+                'class': 'form-control mb-2'
+            }),
+            'content': forms.FileInput(attrs={
+                'class': 'form-control mb-2'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(ChapterForm, self).__init__(*args, **kwargs)
+        self.fields['book'].queryset = Book.objects.filter(upload_by=user)
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        book = self.cleaned_data.get('book')
+
+        if content and book:
+            content_extension = os.path.splitext(content.name)[1].lower()
+            expected_extension = f".{book.file_format.lower()}"
+
+            if content_extension != expected_extension:
+                raise ValidationError(
+                    f"The uploaded content must be in {book.file_format} format."
+                )
+
+        return content

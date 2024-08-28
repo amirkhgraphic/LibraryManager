@@ -4,8 +4,8 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 
-from .forms import AuthorForm, BookForm
-from .models import Author, Book
+from .forms import AuthorForm, BookForm, ChapterForm
+from .models import Author, Book, Chapter
 
 
 # Author Model Views
@@ -94,3 +94,64 @@ class BookUpdateView(generic.UpdateView):
             raise PermissionDenied("You do not have permission to edit this book.")
 
         return obj
+
+
+@method_decorator(login_required, name='dispatch')
+class ChapterCreateView(generic.CreateView):
+    model = Chapter
+    form_class = ChapterForm
+    template_name = 'library/chapter-create.html'
+    success_url = reverse_lazy('library:book-list')
+
+    def get_form_kwargs(self):
+        kwargs = super(ChapterCreateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+@method_decorator(login_required, name='dispatch')
+class ChapterUpdateView(generic.UpdateView):
+    model = Chapter
+    form_class = ChapterForm
+    pk_url_kwarg = 'chapter_id'
+    context_object_name = 'chapter'
+    template_name = 'library/chapter-update.html'
+    success_url = reverse_lazy('library:book-list')
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+
+        if obj.book.upload_by != self.request.user:
+            raise PermissionDenied("You do not have permission to edit this book.")
+
+        return obj
+
+    def get_form_kwargs(self):
+        kwargs = super(ChapterUpdateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+@method_decorator(login_required, name='dispatch')
+class ChapterDeleteView(generic.DeleteView):
+    model = Chapter
+    template_name = 'library/chapter-delete.html'
+    success_url = reverse_lazy('library:book-list')
+    pk_url_kwarg = 'chapter_id'
+    context_object_name = 'form'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+
+        if obj.book.upload_by != self.request.user:
+            raise PermissionDenied("You do not have permission to edit this book.")
+
+        return obj
+
+
+@method_decorator(login_required, name='dispatch')
+class ChapterDetailView(generic.DetailView):
+    model = Chapter
+    pk_url_kwarg = 'chapter_id'
+    template_name = 'library/chapter-detail.html'
+    context_object_name = 'chapter'

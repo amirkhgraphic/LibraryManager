@@ -9,10 +9,11 @@
         {% include 'messages.html' %}
 
         <section>
-            <h2>Books List</h2>
+            <h2>Genre: {{ genre.name }}</h2>
             <div class="line mb-3"></div>
 
             <div>
+                <h3>Books</h3>
                 {% for book in books %}
                     <div class="card mb-3 bg-dark p-3 rounded-3">
                         <div class="row g-2">

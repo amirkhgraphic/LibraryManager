@@ -11,5 +11,12 @@
         {% include 'messages.html' %}
 
         <h1><img src="{{ user.avatar.url }}" alt="avatar" width="50"/> {{ user }}</h1>
+        <div class="d-flex flex-column">
+            <a class="btn btn-primary" href="{% url 'library:book-list' %}">List Books</a>
+            <a class="btn btn-primary" href="{% url 'library:book-create' %}">Create Book</a>
+            <a class="btn btn-primary" href="{% url 'library:author-list' %}">List Author</a>
+            <a class="btn btn-primary" href="{% url 'library:author-create' %}">Create Author</a>
+            <a class="btn btn-primary" href="{% url 'library:genre-list' %}">List Genre</a>
+        </div>
     </main>
 {% endblock %}

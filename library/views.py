@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .forms import AuthorForm, BookForm, ChapterForm
-from .models import Author, Book, Chapter
+from .models import Author, Book, Chapter, Genre
 
 
 # Author Model Views
@@ -155,3 +155,21 @@ class ChapterDetailView(generic.DetailView):
     pk_url_kwarg = 'chapter_id'
     template_name = 'library/chapter-detail.html'
     context_object_name = 'chapter'
+
+
+class GenreListView(generic.ListView):
+    model = Genre
+    template_name = 'library/genre_list.html'
+    context_object_name = 'genres'
+
+
+class GenreDetailView(generic.DetailView):
+    model = Genre
+    pk_url_kwarg = 'genre_id'
+    context_object_name = 'genre'
+    template_name = 'library/genre_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['books'] = self.get_object().books.all()
+        return context

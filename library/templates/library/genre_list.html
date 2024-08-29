@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>Genre List</h2>
+            <div class="line mb-3"></div>
+
+            <div>
+                {% for genre in genres %}
+                    <a
+                        class="btn btn-secondary me-2 px-3"
+                        style="min-width: auto;"
+                        href="{% url 'library:genre-detail' genre.id %}"
+                    >{{ genre.name }}</a>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock main %}

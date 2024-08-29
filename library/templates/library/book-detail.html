@@ -27,7 +27,7 @@
 
             <h5>Genres:</h5>
             {% for genre in book.genres.all %}
-                <a class="btn btn-secondary me-2 px-3" style="min-width: auto;" href="#">{{ genre }}</a>
+                <a class="btn btn-secondary me-2 px-3" style="min-width: auto;" href="{% url 'library:genre-detail' genre.id %}">{{ genre }}</a>
             {% endfor %}
             <br/>
             <br/>

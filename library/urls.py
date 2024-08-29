@@ -20,4 +20,8 @@ urlpatterns = [
     path('chapter/update/<int:chapter_id>', views.ChapterUpdateView.as_view(), name='chapter-update'),
     path('chapter/delete/<int:chapter_id>', views.ChapterDeleteView.as_view(), name='chapter-delete'),
     path('chapter/<int:chapter_id>', views.ChapterDetailView.as_view(), name='chapter-detail'),
+
+    # Genre Model Urls
+    path('genre/', views.GenreListView.as_view(), name='genre-list'),
+    path('genre/<int:genre_id>/', views.GenreDetailView.as_view(), name='genre-detail'),
 ]

@@ -15,7 +15,7 @@
             <form method="GET" class="mb-5 gap-0">
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="text" name="q" class="form-control" placeholder="Search by title or description" value="{{ search_query }}">
+                        <input type="text" name="q" class="form-control" placeholder="Search by title or description" value="{{ search_query|default_if_none:'' }}">
                     </div>
                     <div class="col-md-4">
                         <select name="author" class="form-select">
@@ -39,8 +39,16 @@
                 </div>
                 <div class="text-end">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{% url 'library:book-list' %}" class="btn btn-secondary">Reset</a>
+                    <a href="{% url 'library:book-list' %}" class="btn btn-danger">Reset</a>
                 </div>
+            </form>
+
+            <form method="get" action="{% url 'library:my-books-delete' %}">
+                <input type="hidden" name="q" value="{{ search_query|default_if_none:'' }}">
+                <input type="hidden" name="author" value="{{ request.GET.author }}">
+                <input type="hidden" name="genre" value="{{ request.GET.genre }}">
+                <input type="hidden" name="published_date" value="{{ request.GET.published_date }}">
+                <button type="submit" class="btn btn-danger mb-3">Delete All Listed Books</button>
             </form>
 
             <div>

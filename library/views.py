@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -75,6 +76,7 @@ class BookListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['authors'] = Author.objects.all()
         context['genres'] = Genre.objects.all()
+        context['search_query'] = self.request.GET.get('q')
         return context
 
 
@@ -229,4 +231,45 @@ class MyBooksListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['authors'] = Author.objects.all()
         context['genres'] = Genre.objects.all()
+        context['search_query'] = self.request.GET.get('q')
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class MyBooksDeleteView(generic.View):
+    def get_queryset(self):
+        queryset = Book.objects.filter(upload_by=self.request.user)
+
+        author = self.request.GET.get('author')
+        genre = self.request.GET.get('genre')
+        published_date = self.request.GET.get('published_date')
+        search_query = self.request.GET.get('q')
+
+        if not (author or genre or published_date or search_query):
+            return queryset, True
+
+        if author:
+            queryset = queryset.filter(author__id=author)
+        if genre:
+            queryset = queryset.filter(genres__id=genre)
+        if published_date:
+            queryset = queryset.filter(published_date__year=published_date)
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
+
+        return queryset, (len(queryset) == len(Book.objects.filter(upload_by=self.request.user)))
+
+    def get(self, *args, **kwargs):
+        queryset, is_all = self.get_queryset()
+
+        context = {
+            'queryset': queryset,
+            'is_all': is_all,
+            'search_query': self.request.GET.get('q'),
+        }
+        return render(self.request, 'library/user-books-delete.html', context=context)
+
+    def post(self, request, *args, **kwargs):
+        queryset, _ = self.get_queryset()
+        queryset.delete()
+        return redirect(reverse_lazy('library:user-books'))

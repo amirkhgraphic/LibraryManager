@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <main class="d-block w-75">
+        {% include 'messages.html' %}
+
+        <section>
+            <h2>User Books Delete</h2>
+            <div class="line"></div>
+            {% if queryset.exists %}
+                {% if is_all %}
+                    <h3>Are you sure you want to delete <b>All</b> of your books?!</h3>
+                {% else %}
+                    <h3>Are you sure you want to delete these books?!</h3>
+                {% endif %}
+                    <ul>
+                        {% for book in queryset %}
+                            <li>{{ book }}</li>
+                        {% endfor %}
+                    </ul>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button class="btn btn-danger w-100" type="submit">Submit</button>
+                    </form>
+                    <a href="{% url 'library:book-list' %}" class="btn btn-secondary w-100">Cancel</a>
+            {% else %}
+                <h3>You do not have any books to delete!</h3>
+            {% endif %}
+        </section>
+    </main>
+{% endblock main %}

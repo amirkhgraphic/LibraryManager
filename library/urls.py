@@ -24,4 +24,6 @@ urlpatterns = [
     # Genre Model Urls
     path('genre/', views.GenreListView.as_view(), name='genre-list'),
     path('genre/<int:genre_id>/', views.GenreDetailView.as_view(), name='genre-detail'),
+
+    path('my-books/', views.MyBooksListView.as_view(), name='user-books'),
 ]

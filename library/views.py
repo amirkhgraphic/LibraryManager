@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -51,6 +52,30 @@ class BookListView(generic.ListView):
     template_name = 'library/book-list.html'
     context_object_name = 'books'
     ordering = ('-created_at', )
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author = self.request.GET.get('author')
+        genre = self.request.GET.get('genre')
+        published_date = self.request.GET.get('published_date')
+        search_query = self.request.GET.get('q')
+
+        if author:
+            queryset = queryset.filter(author__id=author)
+        if genre:
+            queryset = queryset.filter(genres__id=genre)
+        if published_date:
+            queryset = queryset.filter(published_date__year=published_date)
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['authors'] = Author.objects.all()
+        context['genres'] = Genre.objects.all()
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -172,4 +197,36 @@ class GenreDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['books'] = self.get_object().books.all()
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class MyBooksListView(generic.ListView):
+    template_name = 'library/user-books.html'
+    context_object_name = 'books'
+    ordering = ('-created_at', )
+
+    def get_queryset(self):
+        queryset = Book.objects.filter(upload_by=self.request.user)
+
+        author = self.request.GET.get('author')
+        genre = self.request.GET.get('genre')
+        published_date = self.request.GET.get('published_date')
+        search_query = self.request.GET.get('q')
+
+        if author:
+            queryset = queryset.filter(author__id=author)
+        if genre:
+            queryset = queryset.filter(genres__id=genre)
+        if published_date:
+            queryset = queryset.filter(published_date__year=published_date)
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['authors'] = Author.objects.all()
+        context['genres'] = Genre.objects.all()
         return context

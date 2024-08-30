@@ -46,9 +46,7 @@ class SignupView(FormView):
 class ProfileUpdateView(UpdateView):
     form_class = ProfileForm
     template_name = 'user/profile.html'
-
-    def get_success_url(self):
-        return self.request.path
+    success_url = reverse_lazy('user:profile')
 
     def get_object(self, queryset=None):
         return self.request.user

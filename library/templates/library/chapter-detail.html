@@ -9,18 +9,28 @@
         {% include 'messages.html' %}
 
         <section>
-            <h1>{{ chapter }}</h1>
+            <h1>{{ chapter.title }}</h1>
             <div class="line mb-3"></div>
 
             <div class="text-center">
-                <img class="image-fluid" src="{{ chapter.book.cover_image.url }}" alt="{{ chapter.book.title }}" width="500px" />
+                <img class="img-fluid" src="{{ chapter.book.cover_image.url }}" alt="{{ chapter.book.title }}" width="500px" />
             </div>
 
             <h5>Book: {{ chapter.book.title }}</h5>
             <h5>Author: {{ chapter.book.author }}</h5>
             <h5>Chapter: {{ chapter.number }}</h5>
             <h5>Title: {{ chapter.title }}</h5>
-            <h5>Content: {{ chapter.content.url }}</h5>
+
+            <div class="chapter-content">
+                {% if chapter.book.file_format == 'MP3' or chapter.book.file_format == 'AAC' or chapter.book.file_format == 'M4A' or chapter.book.file_format == 'WAV' or chapter.book.file_format == 'FLAC' or chapter.book.file_format == 'OGG' or chapter.book.file_format == 'WMA' %}
+                    <audio controls>
+                        <source src="{{ chapter.content.url }}" type="audio/{{ chapter.book.file_format|lower }}">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% else %}
+                    <a target="_blank" href="{{ chapter.content.url }}" class="btn btn-primary">Download {{ chapter.title }}</a>
+                {% endif %}
+            </div>
 
             {% if request.user == chapter.book.upload_by %}
                 <a href="{% url 'library:chapter-update' chapter.id %}" class="btn btn-secondary">Update</a>
